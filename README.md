@@ -17,4 +17,6 @@ Steps to be up-to-date with the project
 
 1 - go to git
 
-2 - select fetch
+2 - select GitHub
+
+3 - select sync Fork
