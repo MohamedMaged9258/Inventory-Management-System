@@ -17,6 +17,8 @@ Steps to be up-to-date with the project
 
 1 - go to git
 
-2 - select Update Project
+2 - select GitHub
 
-3 - or press (CTRL + T)
+3 - Choose sync fork
+
+4 - press (CTRL + T)
