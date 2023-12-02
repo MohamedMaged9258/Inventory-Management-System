@@ -43,12 +43,33 @@ public class Inventory {
         return product.info();
     }
 
-    public void viewProducts(){
-        Node current = productsLinkedList.getHead();
-        while (current.next != null){
-            productInformation((Product) current.data);
-            current = current.next;
+
+        public void viewProducts() {
+            Node current = productsLinkedList.getHead();
+            while (current != null) {
+                productInformation((Product) current.data);
+                current = current.next;
+            }
         }
-        productInformation((Product) current.data);
+
+        public Product getProductByName(String productName) {
+            Node current = productsLinkedList.getHead();
+            while (current != null) {
+                Product product = (Product) current.data;
+                if (product.getProductName().equalsIgnoreCase(productName)) {
+                    return product;
+                }
+                current = current.next;
+            }
+            return null;
+        }
+    public void displayProducts() {
+        System.out.println("List of Products:");
+        viewProducts();
     }
-}
+    }
+
+
+
+
+

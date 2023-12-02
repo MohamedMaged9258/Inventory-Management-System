@@ -1,5 +1,5 @@
 package Classes;
-
+import java.util.Scanner;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -13,15 +13,15 @@ public class Customer {
 
     private String Cname;
 
+    public Customer(){}
+
     public Customer (String CuserName, String Cpassword, String Cname) {
         this.CuserName = CuserName;
         this.Cpassword = Cpassword;
         this.Cname = Cname;
     }
 
-    public Customer() {
 
-    }
 
     //    ================================================================
 
@@ -46,8 +46,85 @@ public class Customer {
             System.out.println("Please Check the product Name you provided.");
         }else inventory.productInformation((Product) object);
     }
+//=================================================================================
+        public void customerface(Inventory inventory) {
+            Scanner s = new Scanner(System.in);
+            boolean exit = false;
 
-//TODO LIST addUserCart,getCart_Bill
+            while (!exit) {
+                System.out.println("Customer Interface:");
+                System.out.println("1. View Products");
+                System.out.println("2. Add Item to Cart");
+                System.out.println("3. View Cart");
+                System.out.println("4. Place Order");
+                System.out.println("5. View Order Status");
+                System.out.println("6. Exit");
+
+                int choice = s.nextInt();
+
+                switch (choice) {
+                    case 1:
+                        inventory.displayProducts();
+                        break;
+
+                    case 2:
+
+                        System.out.println("Enter the name of the product to add to the cart:");
+                        s.nextLine();
+                        String productName = s.nextLine();
+                        Product product = inventory.getProductByName(productName);
+                        if (product != null) {
+                            addUserCart(product);
+                            System.out.println("Product added to the cart!");
+                        } else {
+                            System.out.println("Product not found. Please check the name.");
+                        }
+                        break;
+
+                    case 3:
+
+                        displayCart();
+                        break;
+
+                    case 4:
+
+                        placeOrder();
+                        break;
+
+                    case 5:
+
+                        viewOrderStatus();
+                        break;
+
+                    case 6:
+
+                        exit = true;
+                        break;
+
+                    default:
+                        System.out.println("Invalid choice. Please try again.");
+                }
+            }
+        }
+
+        private void displayCart() {
+            System.out.println("Shopping Cart:");
+           // shopCart.display();
+            System.out.println("Total Bill: $" + getCart_Bill());
+        }
+
+        private void placeOrder() {
+            System.out.println("Order placed successfully!");
+            shopCart.clear();
+        }
+
+        private void viewOrderStatus() {
+            System.out.println("No orders placed yet.");
+        }
+
+//=================================================================================================================
+
+    //TODO LIST addUserCart,getCart_Bill
     public void addUserCart(Product product){
         shopCart.insert(product);
     }

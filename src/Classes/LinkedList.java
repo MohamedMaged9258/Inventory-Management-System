@@ -79,4 +79,9 @@ public class LinkedList {
         }
         return searchByName(userName, root.next);
     }
+    
+    public void clear() {
+        head = null;
+        size = 0;
+    }
 }
