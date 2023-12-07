@@ -4,6 +4,8 @@ package Classes;
 //                  updating stock levels, and retrieving product information.)
 //						(By Using Data Structures: Arrays || Linked List) )
 
+import java.util.ArrayList;
+
 public class Inventory {
     LinkedList customersLinkedList = new LinkedList();
     LinkedList adminsLinkedList = new LinkedList();
@@ -35,39 +37,64 @@ public class Inventory {
         return orderLinkedList;
     }
 
-    public void addProduct(Product product){
+    public void addProduct(Product product) {
         this.productsLinkedList.insert(product);
     }
 
-    public String productInformation(Product product){
-        return product.info();
+    public void productInformation(Product product) {
+        System.out.println(product.info());
     }
 
+    public void removeCustomer(Customer customer){
+        customersLinkedList.removeCustomer(customer);
+    }
 
-        public void viewProducts() {
-            Node current = productsLinkedList.getHead();
-            while (current != null) {
-                productInformation((Product) current.data);
-                current = current.next;
-            }
-        }
+    public void viewProducts() {
+        productsLinkedList.displayProduct();
+    }
 
-        public Product getProductByName(String productName) {
-            Node current = productsLinkedList.getHead();
-            while (current != null) {
-                Product product = (Product) current.data;
-                if (product.getProductName().equalsIgnoreCase(productName)) {
-                    return product;
-                }
-                current = current.next;
+    public Product getProductByName(String productName) {
+        Node current = productsLinkedList.getHead();
+        while (current != null) {
+            Product product = (Product) current.data;
+            if (product.getProductName().equals(productName)) {
+                return product;
             }
-            return null;
+            current = current.next;
         }
+        return null;
+    }
+
+    public void placeOrder(Customer customer) {
+        Order order = new Order(customer.getCName(), customer.getShopCart().fromProductLinkedListToArrayList(), customer.getCart_Bill());
+        orderLinkedList.insert(order);
+        orderQueue.enqueue(order);
+    }
+
     public void displayProducts() {
         System.out.println("List of Products:");
         viewProducts();
     }
+
+    public void save() {
+        ArrayList<Customer> customerArrayList = customersLinkedList.fromCustomerLinkedListToArrayList();
+        for (Customer customer : customerArrayList) {
+            Customer.saveCustomerToFile(customer);
+        }
+        ArrayList<Admin> adminArrayList = adminsLinkedList.fromAdminLinkedListToArrayList();
+        for (Admin admin : adminArrayList) {
+            Admin.saveAdminToFile(admin);
+        }
+        ArrayList<Product> productArrayList = productsLinkedList.fromProductLinkedListToArrayList();
+        for (Product product : productArrayList) {
+            Product.saveProductToFile(product);
+        }
+        ArrayList<Order> orderArrayList = orderLinkedList.fromOrderLinkedListToArrayList();
+        for (Order order : orderArrayList) {
+            Order.saveOrderToFile(order);
+        }
     }
+}
 
 
 

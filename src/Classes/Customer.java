@@ -1,5 +1,6 @@
 package Classes;
-import java.util.Scanner;
+
+import java.util.ArrayList;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -13,14 +14,15 @@ public class Customer {
 
     private String Cname;
 
-    public Customer(){}
+    public Customer() {
+    }
 
-    public Customer (String CuserName, String Cpassword, String Cname) {
+    public Customer(String CuserName, String Cpassword, String Cname, LinkedList shopCart) {
         this.CuserName = CuserName;
         this.Cpassword = Cpassword;
         this.Cname = Cname;
+        this.shopCart = shopCart;
     }
-
 
 
     //    ================================================================
@@ -37,121 +39,81 @@ public class Customer {
         return Cname;
     }
 
-//    ================================================================
+    public LinkedList getShopCart() {
+        return shopCart;
+    }
 
-    public void productInformationByProductName(String productName, Inventory inventory){
+    //    ================================================================
+
+    public void productInformationByProductName(String productName, Inventory inventory) {
         LinkedList products = inventory.productsLinkedList;
         Object object = products.searchByName(productName, products.getHead());
-        if (object instanceof String){
+        if (object instanceof String) {
             System.out.println("Please Check the product Name you provided.");
-        }else inventory.productInformation((Product) object);
+        } else inventory.productInformation((Product) object);
     }
-//=================================================================================
-        public void customerface(Inventory inventory) {
-            Scanner s = new Scanner(System.in);
-            boolean exit = false;
+//================================================================================
 
-            while (!exit) {
-                System.out.println("Customer Interface:");
-                System.out.println("1. View Products");
-                System.out.println("2. Add Item to Cart");
-                System.out.println("3. View Cart");
-                System.out.println("4. Place Order");
-                System.out.println("5. View Order Status");
-                System.out.println("6. Exit");
-
-                int choice = s.nextInt();
-
-                switch (choice) {
-                    case 1:
-                        inventory.displayProducts();
-                        break;
-
-                    case 2:
-
-                        System.out.println("Enter the name of the product to add to the cart:");
-                        s.nextLine();
-                        String productName = s.nextLine();
-                        Product product = inventory.getProductByName(productName);
-                        if (product != null) {
-                            addUserCart(product);
-                            System.out.println("Product added to the cart!");
-                        } else {
-                            System.out.println("Product not found. Please check the name.");
-                        }
-                        break;
-
-                    case 3:
-
-                        displayCart();
-                        break;
-
-                    case 4:
-
-                        placeOrder();
-                        break;
-
-                    case 5:
-
-                        viewOrderStatus();
-                        break;
-
-                    case 6:
-
-                        exit = true;
-                        break;
-
-                    default:
-                        System.out.println("Invalid choice. Please try again.");
-                }
-            }
-        }
-
-        private void displayCart() {
+    public void displayCart() {
+        if (shopCart.getSize() == 0) {
+            System.out.println("Your shop cart is empty." +
+                    "Please Add some products to your shopping cart.");
+        } else {
             System.out.println("Shopping Cart:");
-           // shopCart.display();
+            shopCart.displayProduct();
             System.out.println("Total Bill: $" + getCart_Bill());
         }
+    }
 
-        private void placeOrder() {
-            System.out.println("Order placed successfully!");
-            shopCart.clear();
-        }
+    public void placeOrder() {
+        System.out.println("Order placed successfully!");
+        shopCart.clear();
+    }
 
-        private void viewOrderStatus() {
-            System.out.println("No orders placed yet.");
-        }
+    public void viewOrderStatus() {
+        System.out.println("No orders placed yet.");
+    }
 
 //=================================================================================================================
 
     //TODO LIST addUserCart,getCart_Bill
-    public void addUserCart(Product product){
+    public void addToUserCart(Product product) {
         shopCart.insert(product);
     }
 
-    public double getCart_Bill(){
+    public double getCart_Bill() {
         double totalBill = 0.0;
         Node current = shopCart.getHead();
-        while (current.next != null){
+        while (current.next != null) {
             totalBill += ((Product) current.data).getPrice();
+            current = current.next;
         }
-        if (shopCart.getHead() != null){
-            totalBill += ((Product) current.data).getPrice();
-        }
+        totalBill += ((Product) current.data).getPrice();
         return totalBill;
     }
 
     @Override
     public String toString() {
-        return CuserName + "/" +
-                Cpassword + "/" +
-                Cname + "\n";
+        return CuserName + "//" +
+                Cpassword + "//" +
+                Cname + "//" +
+                printArray(shopCart.fromProductLinkedListToArrayList()) + "\n";
     }
 
-    public static void saveAdminToFile(Admin admin) {
+    public String printArray(ArrayList<Product> products) {
+        String s = "[";
+        for (Product product : products) {
+            s += product.toStringForOrder();
+            s += ",";
+        }
+        s += "]";
+        return s;
+    }
+
+    public static void saveCustomerToFile(Customer customer) {
         try {
-            FileWriter writer = new FileWriter("Customers.txt", true);
-            writer.write(admin.toString());
+            FileWriter writer = new FileWriter("DataBase//Customers.txt", true);
+            writer.write(customer.toString());
             writer.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -164,8 +126,19 @@ public class Customer {
             BufferedReader br = new BufferedReader(new FileReader("DataBase//Customers.txt"));
             String line;
             while ((line = br.readLine()) != null) {
-                String[] parts = line.split("/");
-                Customer customer = new Customer(parts[0], parts[1], parts[2]);
+                String[] parts = line.split("//");
+                ArrayList<Product> shopCart = new ArrayList<>();
+                parts[3] = parts[3].replace("[", "").replace("]", "");
+                if (!parts[3].isBlank()) {
+                    String[] products = parts[3].split(",");
+                    for (String product : products) {
+                        product = product.replace("(", "").replace(")", "");
+                        String[] productParts = product.split("/");
+                        Product product2 = new Product(Integer.parseInt(productParts[0]), productParts[1], Double.parseDouble(productParts[2]), Integer.parseInt(productParts[3]));
+                        shopCart.add(product2);
+                    }
+                }
+                Customer customer = new Customer(parts[0], parts[1], parts[2], LinkedList.fromProductArrayListToLinkedList(shopCart));
                 customersArrayList.insert(customer);
             }
             br.close();

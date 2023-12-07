@@ -19,13 +19,18 @@ public class OrderQueue {
     public static Queue loadOrderQueue(LinkedList ordersList){
         Queue queue = new Queue();
         Node current = ordersList.getHead();
-        while (current.next!=null){
-            queue.enqueue(current.data);
-            current = current.next;
-        }
         if (current != null){
+            while (current.next!=null){
+                queue.enqueue(current.data);
+                current = current.next;
+            }
             queue.enqueue(current.data);
         }
+
         return queue;
+    }
+
+    public void enqueue(Order order){
+        orderQueue.enqueue(order);
     }
 }

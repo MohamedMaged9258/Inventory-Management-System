@@ -15,6 +15,8 @@ public class Order {
     private ArrayList<Product> productsOrdered;
     private Double totalAmount;
 
+
+
     public Order (String customerName, ArrayList<Product> productsOrdered, Double totalAmount){
         this.orderId = generateId();
         this.productsOrdered = productsOrdered;
@@ -98,14 +100,8 @@ public class Order {
                 parts[2] = parts[2].replace("[", "").replace("]", "");
                 if (!parts[2].isBlank()) {
                     String[] products = parts[2].split(",");
-                    for (int i = 0; i < products.length; i++) {
-                        products[i] = products[i].replace("(", "").replace(")", "");
-                    }
-
-                    for (int i = 0; i < products.length; i++) {
-                        products[i] = products[i].replace("(", "").replace(")", "");
-                    }
                     for (String product : products) {
+                        product = product.replace("(", "").replace(")", "");
                         String[] productParts = product.split("/");
                         Product product2 = new Product(Integer.parseInt(productParts[0]), productParts[1], Double.parseDouble(productParts[2]), Integer.parseInt(productParts[3]));
                         productArrayList.add(product2);
@@ -117,7 +113,7 @@ public class Order {
                 orders.insert(order);
             }
             br.close();
-            FileWriter writer = new FileWriter("Customers.txt");
+            FileWriter writer = new FileWriter("DataBase//Orders.txt");
             writer.write("");
             writer.close();
         } catch (IOException e) {

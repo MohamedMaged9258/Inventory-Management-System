@@ -47,7 +47,7 @@ public class Product {
                 ", productName=" + productName+
                 ", quantityInStock='" + quantityInStock +
                 ", price=" + price +
-                '}' + "/n";
+                '}' + "\n";
     }
 
     @Override
@@ -86,7 +86,7 @@ public class Product {
                 products.insert(product);
             }
             br.close();
-            FileWriter writer = new FileWriter("Admins.txt");
+            FileWriter writer = new FileWriter("DataBase//Products.txt");
             writer.write("");
             writer.close();
         } catch (IOException e) {
