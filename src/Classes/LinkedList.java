@@ -61,24 +61,52 @@ public class LinkedList {
         }
     }
 
-    public Object searchById(int productId, Node root) {
-        Product product = (Product) root.data;
-        if (product.getProductId() != productId && root.next == null) {
-            return "Not Found";
-        } else if (product.getProductId() == productId) {
-            return root;
+    public void removeAdmin(Admin admin) {
+        Node current = head;
+        if (head != null) {
+            if (current.data == admin) {
+                if (current.next != null) {
+                    head = head.next;
+                    System.out.println("Removed");
+                } else {
+                    head = null;
+                    System.out.println("Removed");
+                }
+            } else {
+                while (current.next != null && current.next.data != admin) {
+                    current = current.next;
+                }
+                if (current.next != null) {
+                    current.next = current.next.next;
+                    System.out.println("Removed");
+                } else System.out.println("Admin Not Found");
+            }
         }
-        return searchById(productId, root.next);
+        System.out.println("Admin Not Found");
+    }
+
+    public Object searchById(int productId, Node root) {
+        if (root != null) {
+            Product product = (Product) root.data;
+            if (product.getProductId() != productId && root.next == null) {
+                return "Not Found";
+            } else if (product.getProductId() == productId) {
+                return root;
+            }
+            return searchById(productId, root.next);
+        } else return "Not Found";
     }
 
     public Object searchByName(String productName, Node root) {
-        Product product = (Product) root.data;
-        if (!Objects.equals(product.getProductName(), productName) && root.next == null) {
-            return "Not Found";
-        } else if (product.getProductName().equals(productName)) {
-            return root;
-        }
-        return searchByName(productName, root.next);
+        if (root != null) {
+            Product product = (Product) root.data;
+            if (!Objects.equals(product.getProductName(), productName) && root.next == null) {
+                return "Not Found";
+            } else if (product.getProductName().equals(productName)) {
+                return root;
+            }
+            return searchByName(productName, root.next);
+        }else return "Not Found";
     }
 
     public Object searchCustomerByUserName(String userName, Node root) {
@@ -92,13 +120,15 @@ public class LinkedList {
     }
 
     public Object searchAdminByUserName(String userName, Node root) {
-        Admin customer = (Admin) root.data;
-        if (!Objects.equals(customer.getAUserName(), userName) && root.next == null) {
-            return "Not Found";
-        } else if (customer.getAUserName().equals(userName)) {
-            return root;
-        }
-        return searchByName(userName, root.next);
+        if (root != null) {
+            Admin customer = (Admin) root.data;
+            if (!Objects.equals(customer.getUserName(), userName) && root.next == null) {
+                return "Not Found";
+            } else if (customer.getUserName().equals(userName)) {
+                return root;
+            }
+            return searchByName(userName, root.next);
+        }else return "Not Found";
     }
 
     public void displayProduct() {
@@ -163,6 +193,19 @@ public class LinkedList {
             orderArrayList.add((Order) current.data);
         }
         return orderArrayList;
+    }
+
+    public ArrayList<Report> fromReportLinkedListToArrayList() {
+        ArrayList<Report> reportArrayList = new ArrayList<>();
+        Node current = head;
+        if (current != null) {
+            while (current.next != null) {
+                reportArrayList.add((Report) current.data);
+                current = current.next;
+            }
+            reportArrayList.add((Report) current.data);
+        }
+        return reportArrayList;
     }
 
     public static LinkedList fromProductArrayListToLinkedList(ArrayList<Product> productArrayList) {

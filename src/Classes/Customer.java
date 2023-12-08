@@ -8,43 +8,30 @@ import java.io.IOException;
 
 public class Customer {
     private LinkedList shopCart;
-    private String CuserName;
-
-    private String Cpassword;
-
-    private String Cname;
+    private String userName;
+    private String password;
+    private String name;
 
     public Customer() {
     }
-
-    public Customer(String CuserName, String Cpassword, String Cname, LinkedList shopCart) {
-        this.CuserName = CuserName;
-        this.Cpassword = Cpassword;
-        this.Cname = Cname;
+    public Customer(String userName, String password, String name, LinkedList shopCart) {
+        this.userName = userName;
+        this.password = password;
+        this.name = name;
         this.shopCart = shopCart;
     }
-
-
-    //    ================================================================
-
     public String getCUserName() {
-        return CuserName;
+        return userName;
     }
-
     public String getCPassword() {
-        return Cpassword;
+        return password;
     }
-
     public String getCName() {
-        return Cname;
+        return name;
     }
-
     public LinkedList getShopCart() {
         return shopCart;
     }
-
-    //    ================================================================
-
     public void productInformationByProductName(String productName, Inventory inventory) {
         LinkedList products = inventory.productsLinkedList;
         Object object = products.searchByName(productName, products.getHead());
@@ -52,8 +39,6 @@ public class Customer {
             System.out.println("Please Check the product Name you provided.");
         } else inventory.productInformation((Product) object);
     }
-//================================================================================
-
     public void displayCart() {
         if (shopCart.getSize() == 0) {
             System.out.println("Your shop cart is empty." +
@@ -64,23 +49,19 @@ public class Customer {
             System.out.println("Total Bill: $" + getCart_Bill());
         }
     }
-
     public void placeOrder() {
         System.out.println("Order placed successfully!");
         shopCart.clear();
     }
-
-    public void viewOrderStatus() {
-        System.out.println("No orders placed yet.");
-    }
-
-//=================================================================================================================
-
-    //TODO LIST addUserCart,getCart_Bill
     public void addToUserCart(Product product) {
-        shopCart.insert(product);
+        if (product.quantityInStock == 0) {
+            System.out.println("This Product is not available Right Now." +
+                    "We will Provide it as Soon as possible.");
+        } else {
+            product.quantityInStock--;
+            shopCart.insert(product);
+        }
     }
-
     public double getCart_Bill() {
         double totalBill = 0.0;
         Node current = shopCart.getHead();
@@ -91,15 +72,13 @@ public class Customer {
         totalBill += ((Product) current.data).getPrice();
         return totalBill;
     }
-
     @Override
     public String toString() {
-        return CuserName + "//" +
-                Cpassword + "//" +
-                Cname + "//" +
+        return userName + "//" +
+                password + "//" +
+                name + "//" +
                 printArray(shopCart.fromProductLinkedListToArrayList()) + "\n";
     }
-
     public String printArray(ArrayList<Product> products) {
         String s = "[";
         for (Product product : products) {
@@ -109,7 +88,6 @@ public class Customer {
         s += "]";
         return s;
     }
-
     public static void saveCustomerToFile(Customer customer) {
         try {
             FileWriter writer = new FileWriter("DataBase//Customers.txt", true);
@@ -119,7 +97,6 @@ public class Customer {
             e.printStackTrace();
         }
     }
-
     public static LinkedList loadCustomersFromFile() {
         LinkedList customersArrayList = new LinkedList();
         try {

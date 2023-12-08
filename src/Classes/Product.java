@@ -16,31 +16,25 @@ public class Product {
         this.price = price;
         this.quantityInStock = quantityInStock;
     }
-
+    public Product() {}
     public int getProductId() {
         return productId;
     }
-
     public String getProductName() {
         return productName;
     }
-
     public double getPrice() {
         return price;
     }
-
     public int getQuantityInStock() {
         return quantityInStock;
     }
-
     public void setPrice(double price) {
         this.price = price;
     }
-
     public void setQuantityInStock(int quantityInStock) {
         this.quantityInStock = quantityInStock;
     }
-
     public String info(){
         return "Product{" +
                 "productId=" + productId +
@@ -49,7 +43,6 @@ public class Product {
                 ", price=" + price +
                 '}' + "\n";
     }
-
     @Override
     public String toString() {
         return productId + "/" +
@@ -57,14 +50,12 @@ public class Product {
                 price+ "/" +
                 quantityInStock + "\n";
     }
-
     public String toStringForOrder() {
         return productId + "/" +
                 productName + "/" +
                 price+ "/" +
                 quantityInStock;
     }
-
     public static void saveProductToFile(Product product) {
         try {
             FileWriter writer = new FileWriter("DataBase//Products.txt", true);
@@ -74,7 +65,6 @@ public class Product {
             e.printStackTrace();
         }
     }
-
     public static LinkedList loadProductsFromFile() {
         LinkedList products = new LinkedList();
         try {

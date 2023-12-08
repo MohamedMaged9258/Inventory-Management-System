@@ -7,11 +7,11 @@ public class Main {
         LinkedList customersLinkedList = Customer.loadCustomersFromFile();
         LinkedList adminLinkedList = Admin.loadAdminsFromFile();
         LinkedList productsLinkedList = Product.loadProductsFromFile();
+        LinkedList reportLinkedList = Report.loadReportsFromFile();
         LinkedList orderLinkedList = Order.loadOrdersFromFile();
         OrderQueue orderQueue = new OrderQueue(OrderQueue.loadOrderQueue(orderLinkedList));
 
-
-        Inventory inventory = new Inventory(customersLinkedList, adminLinkedList, productsLinkedList, orderLinkedList, orderQueue);
+        Inventory inventory = new Inventory(customersLinkedList, adminLinkedList, productsLinkedList, reportLinkedList, orderQueue);
         Customer customer = new Customer();
         Admin admin = new Admin();
 
@@ -27,8 +27,10 @@ public class Main {
 
         if (x == 1) {
             customer = signInForCustomer(customersLinkedList);
+            inventory.removeCustomer(customer);
         } else if (x == 2) {
-            admin = signInForAdmin(inventory);
+            admin = signInForAdmin(adminLinkedList);
+            inventory.removeAdmin(admin);
         } else if (x == 3) {
             Object object = sign_up();
             if (object instanceof Admin) {
@@ -43,21 +45,22 @@ public class Main {
         boolean exit = false;
         if (x == 1) {
             System.out.println();
-            inventory.removeCustomer(customer);
             try {
                 while (!exit) {
                     System.out.println("Customer Interface:");
-                    System.out.println("1. View Products");
-                    System.out.println("2. Add Item to Cart");
-                    System.out.println("3. View Cart");
-                    System.out.println("4. Place Order");
-                    System.out.println("5. Exit");
+                    System.out.println("""
+                            1. View Products
+                            2. Add Item to Cart
+                            3. View Cart
+                            4. Place Order
+                            5. Exit
+                            """);
                     System.out.print("Choose A Number: ");
                     int choice = scanner.nextInt();
                     System.out.println();
                     switch (choice) {
                         case 1:
-                            inventory.displayProducts();
+                            inventory.viewProducts();
                             break;
                         case 2:
                             System.out.println("Enter the name of the product to add to the cart:");
@@ -79,15 +82,15 @@ public class Main {
                             customer.placeOrder();
                             break;
                         case 5:
-                            exit = true;
                             inventory.save();
                             Customer.saveCustomerToFile(customer);
+                            exit = true;
                             break;
                         default:
                             System.out.println("Invalid choice. Please try again.");
                     }
                 }
-            } catch (Exception e){
+            } catch (Exception e) {
                 System.out.println("An unexpected error occurred. Exiting...");
                 e.printStackTrace();
 
@@ -95,29 +98,94 @@ public class Main {
                 Customer.saveCustomerToFile(customer);
             }
         } else if (x == 2) {
+            System.out.println();
+            try {
+                while (!exit) {
+                    System.out.println("Admin Interface:");
+                    System.out.println("""
+                            1. View Products
+                            2. Add Product
+                            3. Edit Product by Product ID
+                            4. Edit Product by Product Name
+                            5. View Orders
+                            6. Place a Report
+                            7. Sort Products Alphabetically
+                            8. Sort Products by Stock Quantity
+                            9. Exit
+                            """);
+                    System.out.print("Choose A Number: ");
+                    int choice = scanner.nextInt();
+                    System.out.println();
+                    switch (choice) {
+                        case 1:
+                            inventory.viewProducts();
+                            break;
+                        case 2:
+                            admin.addProduct(inventory);
+                            System.out.println();
+                            break;
+                        case 3:
+                            System.out.print("Please Enter the Product ID: ");
+                            int id = scanner.nextInt();
+                            admin.productUpdateByProductId(id, inventory);
+                            break;
+                        case 4:
+                            System.out.print("Please Enter the Product Name: ");
+                            String name = scanner.next();
+                            admin.productUpdateByProductName(name, inventory);
+                            break;
+                        case 5:
+                            inventory.viewOrders();
+                            break;
+                        case 6:
+                            System.out.print("Please Enter the Product ID: ");
+                            id = scanner.nextInt();
+                            inventory.placeReport(admin.placeAReport(id), admin);
+                            break;
+                        case 7:
+                            inventory.sortProductsAlphabetically();
+                            break;
+                        case 8:
+                            inventory.sortProductsByQuantityInStock();
+                            break;
+                        case 9:
+                            inventory.save();
+                            Admin.saveAdminToFile(admin);
+                            exit = true;
+                            break;
+                        default:
+                            System.out.println("Invalid choice. Please try again.");
+                    }
+                }
+            } catch (Exception e) {
+                System.out.println("An unexpected error occurred. Exiting...");
+                e.printStackTrace();
 
+                inventory.save();
+                Admin.saveAdminToFile(admin);
+            }
         }
     }
 
-    public static Admin signInForAdmin(Inventory inventory) {
+    public static Admin signInForAdmin(LinkedList adminLinkedList) {
         Scanner scanner = new Scanner(System.in);
         while (true) {
             System.out.print("Please Enter your User Name: ");
-            String AuserName = scanner.next();
+            String userName = scanner.next();
             System.out.print("Please Enter Your Password: ");
             String password = scanner.next();
-            Object object = inventory.getAdminsLinkedList().searchAdminByUserName(AuserName, inventory.getAdminsLinkedList().getHead());
+            Object object = adminLinkedList.searchAdminByUserName(userName, adminLinkedList.getHead());
             if (object instanceof String) {
-                System.out.println("Please Check your ID and try again.😊");
-            } else {
-                if (((Admin) object).getAPassword().equals(password)) {
+                System.out.println("Please Check your UserName and try again.😊");
+            } else if (object instanceof Node) {
+                Admin admin = (Admin) ((Node) object).getData();
+                if (admin.getPassword().equals(password)) {
                     System.out.println("Sign In Success.👌");
-                    System.out.println("Welcome " + ((Admin) object).getAName());
-                    return ((Admin) object);
+                    System.out.println("Welcome " + admin.getName());
+                    return (admin);
                 } else System.out.println("The Password Is wrong.🤨");
             }
         }
-
     }
 
     public static Customer signInForCustomer(LinkedList customersLinkedList) {
@@ -129,8 +197,8 @@ public class Main {
             String password = scanner.next();
             Object object = customersLinkedList.searchCustomerByUserName(CuserName, customersLinkedList.getHead());
             if (object instanceof String) {
-                System.out.println("Please Check your ID and try again.😊");
-            } else if (object instanceof Node){
+                System.out.println("Please Check your UserName and try again.😊");
+            } else if (object instanceof Node) {
                 Customer customer = (Customer) ((Node) object).getData();
                 if (customer.getCPassword().equals(password)) {
                     System.out.println("Sign In Success.👌");
@@ -158,18 +226,18 @@ public class Main {
                 System.out.print("Please Enter Your Name: ");
                 String name = scanner.nextLine();
                 System.out.print("Please Enter Your User Name: ");
-                String AuserName = scanner.nextLine();
+                String userName = scanner.nextLine();
                 System.out.print("Please Enter Your Password: ");
                 String password = scanner.next();
-                return new Admin(AuserName, password, name);
+                return new Admin(userName, password, name);
             } else if (x == 2) {
                 System.out.print("Please Enter Your Name: ");
                 String name = scanner.nextLine();
                 System.out.print("Please Enter Your User Name: ");
-                String CuserName = scanner.nextLine();
+                String userName = scanner.nextLine();
                 System.out.print("Please Enter Your Password: ");
                 String password = scanner.next();
-                return new Customer(CuserName, password, name, new LinkedList());
+                return new Customer(userName, password, name, new LinkedList());
             } else System.out.println("Please try again.");
         }
     }

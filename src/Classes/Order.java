@@ -10,20 +10,19 @@ import java.util.Arrays;
 import java.util.Random;
 
 public class Order {
-    private String orderId;
-    private String customerName;
-    private ArrayList<Product> productsOrdered;
-    private Double totalAmount;
+    private final String orderId;
+    private final String customerName;
+    private final ArrayList<Product> productsOrdered;
+    private final Double totalAmount;
 
-
-
-    public Order (String customerName, ArrayList<Product> productsOrdered, Double totalAmount){
+    public Order(String customerName, ArrayList<Product> productsOrdered, Double totalAmount) {
         this.orderId = generateId();
         this.productsOrdered = productsOrdered;
         this.customerName = customerName;
         this.totalAmount = totalAmount;
     }
-    public Order (String orderId, String customerName, ArrayList<Product> productsOrdered, Double totalAmount){
+
+    public Order(String orderId, String customerName, ArrayList<Product> productsOrdered, Double totalAmount) {
         this.orderId = orderId;
         this.productsOrdered = productsOrdered;
         this.customerName = customerName;
@@ -43,7 +42,7 @@ public class Order {
         return customerName;
     }
 
-    public ArrayList getProductsOrdered() {
+    public ArrayList<Product> getProductsOrdered() {
         return productsOrdered;
     }
 
@@ -65,13 +64,12 @@ public class Order {
         return orderId + "//" +
                 customerName + "//" +
                 printArray(productsOrdered) + "//" +
-//                productsOrdered.toString() + "//" +
                 totalAmount + "\n";
     }
 
-    public String printArray(ArrayList<Product> products){
+    public String printArray(ArrayList<Product> products) {
         String s = "[";
-        for (Product product: products){
+        for (Product product : products) {
             s += product.toStringForOrder();
             s += ",";
         }

@@ -12,10 +12,8 @@ public class OrderQueue {
     public OrderQueue(Queue orderQueue) {
         this.orderQueue = orderQueue;
     }
-
     public OrderQueue() {
     }
-
     public static Queue loadOrderQueue(LinkedList ordersList){
         Queue queue = new Queue();
         Node current = ordersList.getHead();
@@ -29,8 +27,17 @@ public class OrderQueue {
 
         return queue;
     }
-
     public void enqueue(Order order){
         orderQueue.enqueue(order);
+    }
+    public LinkedList fromQueueToLinkedList(){
+        Queue queue = orderQueue;
+        LinkedList orderLinkedList = new LinkedList();
+        Object object = queue.dequeue();
+        while (object instanceof Node){
+            orderLinkedList.insert(object);
+            object = queue.dequeue();
+        }
+        return orderLinkedList;
     }
 }
