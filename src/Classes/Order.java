@@ -47,9 +47,7 @@ public class Order {
         return productsOrdered;
     }
 
-    public Double getTotalAmount() {
-        return totalAmount;
-    }
+    public Double getTotalAmount() { return totalAmount; }
 
     public String info() {
         return "Order{" +
