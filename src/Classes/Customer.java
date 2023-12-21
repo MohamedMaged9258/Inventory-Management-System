@@ -1,10 +1,10 @@
 package Classes;
 
-import java.util.ArrayList;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class Customer {
     private LinkedList shopCart;
@@ -14,24 +14,30 @@ public class Customer {
 
     public Customer() {
     }
+
     public Customer(String userName, String password, String name, LinkedList shopCart) {
         this.userName = userName;
         this.password = password;
         this.name = name;
         this.shopCart = shopCart;
     }
-    public String getCUserName() {
+
+    public String getUserName() {
         return userName;
     }
-    public String getCPassword() {
+
+    public String getPassword() {
         return password;
     }
-    public String getCName() {
+
+    public String getName() {
         return name;
     }
+
     public LinkedList getShopCart() {
         return shopCart;
     }
+
     public void productInformationByProductName(String productName, Inventory inventory) {
         LinkedList products = inventory.productsLinkedList;
         Object object = products.searchByName(productName, products.getHead());
@@ -39,6 +45,7 @@ public class Customer {
             System.out.println("Please Check the product Name you provided.");
         } else inventory.productInformation((Product) object);
     }
+
     public void displayCart() {
         if (shopCart.getSize() == 0) {
             System.out.println("Your shop cart is empty." +
@@ -49,10 +56,12 @@ public class Customer {
             System.out.println("Total Bill: $" + getCart_Bill());
         }
     }
+
     public void placeOrder() {
         System.out.println("Order placed successfully!");
         shopCart.clear();
     }
+
     public void addToUserCart(Product product) {
         if (product.quantityInStock == 0) {
             System.out.println("This Product is not available Right Now." +
@@ -62,16 +71,20 @@ public class Customer {
             shopCart.insert(product);
         }
     }
+
     public double getCart_Bill() {
         double totalBill = 0.0;
         Node current = shopCart.getHead();
-        while (current.next != null) {
+        if (current != null) {
+            while (current.next != null) {
+                totalBill += ((Product) current.data).getPrice();
+                current = current.next;
+            }
             totalBill += ((Product) current.data).getPrice();
-            current = current.next;
         }
-        totalBill += ((Product) current.data).getPrice();
         return totalBill;
     }
+
     @Override
     public String toString() {
         return userName + "//" +
@@ -79,6 +92,7 @@ public class Customer {
                 name + "//" +
                 printArray(shopCart.fromProductLinkedListToArrayList()) + "\n";
     }
+
     public String printArray(ArrayList<Product> products) {
         String s = "[";
         for (Product product : products) {
@@ -88,6 +102,7 @@ public class Customer {
         s += "]";
         return s;
     }
+
     public static void saveCustomerToFile(Customer customer) {
         try {
             FileWriter writer = new FileWriter("DataBase//Customers.txt", true);
@@ -97,6 +112,7 @@ public class Customer {
             e.printStackTrace();
         }
     }
+
     public static LinkedList loadCustomersFromFile() {
         LinkedList customersArrayList = new LinkedList();
         try {

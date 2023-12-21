@@ -192,17 +192,17 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         while (true) {
             System.out.print("Please Enter your User Name: ");
-            String CuserName = scanner.next();
+            String userName = scanner.next();
             System.out.print("Please Enter Your Password: ");
             String password = scanner.next();
-            Object object = customersLinkedList.searchCustomerByUserName(CuserName, customersLinkedList.getHead());
+            Object object = customersLinkedList.searchCustomerByUserName(userName, customersLinkedList.getHead());
             if (object instanceof String) {
                 System.out.println("Please Check your UserName and try again.😊");
             } else if (object instanceof Node) {
                 Customer customer = (Customer) ((Node) object).getData();
-                if (customer.getCPassword().equals(password)) {
+                if (customer.getPassword().equals(password)) {
                     System.out.println("Sign In Success.👌");
-                    System.out.println("Welcome " + customer.getCName());
+                    System.out.println("Welcome " + customer.getName());
                     return (customer);
                 } else System.out.println("The Password Is wrong.🤨");
             }

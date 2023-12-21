@@ -12,4 +12,8 @@ public class Node {
     public Object getData() {
         return data;
     }
+
+    public Node getNext() {
+        return next;
+    }
 }

@@ -107,7 +107,7 @@ public class Inventory {
     }
 
     public void placeOrder(Customer customer) {
-        Order order = new Order(customer.getCName(), customer.getShopCart().fromProductLinkedListToArrayList(), customer.getCart_Bill());
+        Order order = new Order(customer.getName(), customer.getShopCart().fromProductLinkedListToArrayList(), customer.getCart_Bill());
         orderQueue.enqueue(order);
     }
 

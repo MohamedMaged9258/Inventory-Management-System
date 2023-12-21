@@ -79,6 +79,7 @@ public class LinkedList {
                 if (current.next != null) {
                     current.next = current.next.next;
                     System.out.println("Removed");
+                    return;
                 } else System.out.println("Admin Not Found");
             }
         }
@@ -106,17 +107,19 @@ public class LinkedList {
                 return root;
             }
             return searchByName(productName, root.next);
-        }else return "Not Found";
+        } else return "Not Found";
     }
 
     public Object searchCustomerByUserName(String userName, Node root) {
-        Customer customer = (Customer) root.data;
-        if (!Objects.equals(customer.getCUserName(), userName) && root.next == null) {
-            return "Not Found";
-        } else if (customer.getCUserName().equals(userName)) {
-            return root;
-        }
-        return searchByName(userName, root.next);
+        if (root != null) {
+            Customer customer = (Customer) root.data;
+            if (!Objects.equals(customer.getUserName(), userName) && root.next == null) {
+                return "Not Found";
+            } else if (customer.getUserName().equals(userName)) {
+                return root;
+            }
+            return searchCustomerByUserName(userName, root.next);
+        }else return "Not Found";
     }
 
     public Object searchAdminByUserName(String userName, Node root) {
@@ -127,8 +130,8 @@ public class LinkedList {
             } else if (customer.getUserName().equals(userName)) {
                 return root;
             }
-            return searchByName(userName, root.next);
-        }else return "Not Found";
+            return searchAdminByUserName(userName, root.next);
+        } else return "Not Found";
     }
 
     public void displayProduct() {
